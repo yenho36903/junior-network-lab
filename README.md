@@ -1,11 +1,12 @@
 # junior-network-lab
  이 저장소는 신입 취준생이 Cisco Packet Tracer를 활용하여 네트워크 기초 실습을 수행한 포트폴리오입니다.
  # 목차
-1. 기본 실습 1 — PC+Switch
-2. 기본 실습 2 — Router + DHCP
-3. 기본 실습 3 — 장애 해결
+1. 1월 실습 1 — PC+Switch
+2. 1월 실습 2 — Router + DHCP
+3. 1월 실습 3 — 장애 해결
+4. 2월 실습 1: VLAN 실습
    
-# 기본 실습 1 : pc 2대 + switch
+# 1월 실습 1 : pc 2대 + switch
 
 # 실습 목표
 같은 네트워크면 통신됨
@@ -35,7 +36,7 @@ PC2
 3.ping 결과 확인하기 
 pc1 -> pc2 , pc2 -> pc1
 
-# 기본 실습 2 : 1. pc 2 + switch 에 + router (DHCP)
+# 1월 실습 2 : 1. pc 2 + switch 에 + router (DHCP)
 
 ## 실습 목표 
 같은 네트워크에서는 통신 가능
@@ -101,7 +102,7 @@ ipconfig
 ping 192.168.10.1
 ping PC1 ↔ PC2
 
-# 기본 실습 3 : 1,2 번 실습 장애해결 (잘못된 ip주소에 의한 장애)
+# 1월 실습 3 : 1,2 번 실습 장애해결 (잘못된 ip주소에 의한 장애)
 
 ## 실습 목표 : pc에  잘못된 ip주소 할당하고 P 주소 또는 Subnet Mask가 잘못 설정되면 통신이 되지 않음을 확인
 ipconfig, ping을 이용해 문제를 진단
@@ -123,3 +124,48 @@ Subnet Mask : 255.255.255.0
 3. pc1 에 pc2 ping 보내기
 4. 통신 실패 확인후 다시 올바른 IP주소 설정
 5. 다시 ping 보내 확인하기
+
+# 2월 실습 1 : VLAN 실습
+
+## 실습 목표 : pc 4대 를 2대씩 VLAN 하나씩 지정
+Switch 하나에 여러 PC가 있어도 VLAN을 나누면 서로 다른 네트워크처럼 동작함을 확인
+VLAN은 논리적으로 네트워크를 분리하는 기술임을 이해
+PC1, PC2 → VLAN 10
+PC3, PC4 → VLAN 20
+## 네트워크 구성 : 
+-PC 4대
+- switch 2960-24 한대
+- router 2811 한대
+-케이블: Copper Straight-Through
+## 실습하기 
+1.포트연결 
+PC1 → Fa0/1
+PC2 → Fa0/2
+PC3 → Fa0/3
+PC4 → Fa0/4
+swich - fa0/5
+router - fa0/0
+2.VLAN 생성
+switch 
+enable
+conf t 
+vlan 10 
+name A -> exit
+vlan 20 
+name B -> end 
+예: VLAN 10, VLAN 20
+3.포트 할당
+PC1, PC2 → VLAN 10
+PC3, PC4 → VLAN 20
+int fa0/1
+#switchport mode access
+#switchport access vlan 10
+#int fa0/2
+#switchport mode access
+#switchport access vlan 10
+#end
+conf t
+#int range fa0/3-4
+#switchport mode access
+#switchport access vlan 20
+#end
