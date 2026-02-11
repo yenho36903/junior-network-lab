@@ -7,14 +7,14 @@
 같은 네트워크면 통신됨
 네트워크가 다르면 통신 안 됨
 이 판단 기준이 IP + Subnet Mask
-##네트워크 구성 
+## 네트워크 구성 
 -pc 2대 
 -switch 1eo 2960
 -케이블 : Copper Straight-Through
 ##사용한 프로그램
 Cisco Packet Tracer
 
-##실습 방법
+## 실습 방법
 1.처음에 장비 배치하고 케이블 연결하기 
  Copper Straight-Through 선택
 	PC0 → Switch (Fa0/1) , PC1 → Switch (Fa0/2)
@@ -31,7 +31,7 @@ PC2
 3.ping 결과 확인하기 
 pc1 -> pc2 , pc2 -> pc1
 
-#기본 실습 2 : 1. pc 2 + switch 에 + router (DHCP)
+# 기본 실습 2 : 1. pc 2 + switch 에 + router (DHCP)
 
 ## 실습 목표 
 같은 네트워크에서는 통신 가능
@@ -44,7 +44,7 @@ Cisco Packet Tracer
 - Switch 1대 2960
 - Router 1대 2911
 - 케이블: Copper Straight-Through
-#실습방법 
+## 실습방법 
 기본 실습 1번에 routter 2911 하나 추가하기
 1.수동 설정
 enable
@@ -97,3 +97,25 @@ ipconfig
 ping 192.168.10.1
 ping PC1 ↔ PC2
 
+# 기본 실습 3 : 1,2 번 실습 장애해결 (잘못된 ip주소에 의한 장애)
+
+## 실습 목표 : pc에  잘못된 ip주소 할당하고 P 주소 또는 Subnet Mask가 잘못 설정되면 통신이 되지 않음을 확인
+ipconfig, ping을 이용해 문제를 진단
+올바른 IP 설정으로 장애 해결
+## 실습 구성
+PC 2대
+Switch 2960
+(실습 2라면 Router 2911 + DHCP 포함)
+케이블: Copper Straight-Through
+## 실습하기
+1. pc2에 IP주소 잘못 설정하기 (192.168.2.20/24)
+2. PC1
+IP : 192.168.10.10
+Subnet Mask : 255.255.255.0
+PC2 (잘못 설정)
+IP : 192.168.2.20 ❌
+Subnet Mask : 255.255.255.0
+👉 네트워크 대역이 서로 다름
+3. pc1 에 pc2 ping 보내기
+4. 통신 실패 확인후 다시 올바른 IP주소 설정
+5. 다시 ping 보내 확인하기
