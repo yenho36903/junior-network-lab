@@ -5,7 +5,8 @@
 2. 1월 실습 2 — Router + DHCP
 3. 1월 실습 3 — 장애 해결
 4. 2월 실습 1: VLAN 실습
-   
+5. 2월 실습 2: NAT 실습
+6.    
 # 1월 실습 1 : pc 2대 + switch
 
 # 실습 목표
@@ -169,3 +170,29 @@ conf t
 #switchport mode access
 #switchport access vlan 20
 #end
+4.트렁크 포트 할당하기
+Switch(config)#int fa0/5
+Switch(config-if)#switchport mode trunk
+5.router ip 설정
+interface fa0/0
+ no shutdown
+ exit
+
+interface fa0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+ exit
+
+interface fa0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+ exit
+end
+## 개념설명하기 
+### VLAN 
+-하나의 물리적 스위치를 논리적으로 분할하여 여러 개의 독립적인 네트워크(가상 LAN)를 만드는 기술
+-가상의 공간에서 네트워크를 만들어내는 기술
+-주요 역할과 장점 
+네트워크 분할 및 성능 향샹 ,보안 강화 ,유연한 네트워크 구성 및 관리 ,트래픽 관리 ,비용 절감 
+## 실습자료 출처
+https://gwnuysw.github.io/jekyll/update/2019/01/08/ciscoNetwork.html
