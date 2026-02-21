@@ -196,3 +196,66 @@ end
 네트워크 분할 및 성능 향샹 ,보안 강화 ,유연한 네트워크 구성 및 관리 ,트래픽 관리 ,비용 절감 
 ## 실습자료 출처
 https://gwnuysw.github.io/jekyll/update/2019/01/08/ciscoNetwork.html
+# 2월 실습 2 : NAT 실습
+
+## 실습 목표 : NAT 설정하기
+IPv4의 고갈문제 해결와 사설망 구축하기
+## 네트워크 구성 : 
+- PC 2대
+- Switch 2960 한대
+- Router 2911 두대
+## 실습하기 
+1.포트 연결,IP 주소 재정리
+장치	인터페이스	IP 주소	서브넷 마스크	역할
+PC1	FastEthernet0	10.0.0.10	255.255.255.0	내부 PC
+PC2	FastEthernet0	10.0.0.11	255.255.255.0	내부 PC
+R1	Gi0/0	10.0.0.1	255.255.255.0	내부 LAN (NAT inside)
+R1	Gi0/1	172.16.0.1	255.255.255.0	외부 LAN (NAT outside)
+R2	Gi0/0	172.16.0.2	255.255.255.0	외부 LAN
+R2	loopback0	1.1.1.1	255.255.255.255	테스트용 루프백
+2.인터페이스 IP 설정
+R1 설정 (내부 LAN + NAT) 
+내부 LAN 설정 (PC 설정) 
+en
+config t
+interface GigabitEthernet0/0 
+ip address 10.0.0.1 255.255.255.0 ip nat inside
+no shutdown 
+exit 
+! 외부 LAN 설정 (R2 연결) 
+en
+config t
+interface GigabitEthernet0/1 
+ip address 172.16.0.1 255.255.255.0 
+ip nat outside 
+no shutdown
+exit 
+NAT 설정
+access-list 1 permit 10.0.0.0 0.0.0.255 
+ip nat inside source list 1 interface GigabitEthernet0/1 overload 
+! 기본 라우팅 (필요 시) 
+ip route 0.0.0.0 0.0.0.0 172.16.0.2
+R2 설정 (외부 LAN + 루프백 테스트) 
+enable
+configure terminal 
+! R1 연결 포트 
+interface GigabitEthernet0/0 ip address 
+172.16.0.2 255.255.255.0 no shutdown exit
+! 테스트용 루프백 interface Loopback0 
+ip address 1.1.1.1 255.255.255.255 
+exit 
+!기본 라우팅 (R1로 돌아가는 경로) 
+ip route 10.0.0.0 255.255.255.0 172.16.0.1
+PC1로 테스트 (대표로 하나) 
+PC1에서: ping 1.1.1.1 R1에서: show ip nat translations 
+예시: Inside local 10.0.0.10 → Inside global 172.16.0.1 
+PC2로 테스트 (PAT 증명용) PC2에서: ping 1.1.1.1
+->R1 NAT 테이블에: 10.0.0.10 10.0.0.11
+
+## 개념설명하기 
+### NAT이란 ? 
+- Network Address Translation, 네트워크 주소 변환
+- 라우터나 방화벽 등의 장비에서 사설 IP 주소(Internal)를 공인 IP 주소(Public)로, 또는 그 반대로 1:1 또는 N:1로 변환하는 기술
+- 주된 목적: IPv4 주소 고갈 문제를 해결하기 위한 공인 IP 절약과, 내부 네트워크 구조를 숨겨 보안을 강화
+## 실습자료 출처
+https://m.blog.naver.com/kimdj217/221267672672
