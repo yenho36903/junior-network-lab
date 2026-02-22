@@ -6,7 +6,7 @@
 3. 1월 실습 3 — 장애 해결
 4. 2월 실습 1: VLAN 실습
 5. 2월 실습 2: NAT 실습
-6.    
+6. 2월 실습 3: Port Security 
 # 1월 실습 1 : pc 2대 + switch
 
 # 실습 목표
@@ -199,7 +199,7 @@ https://gwnuysw.github.io/jekyll/update/2019/01/08/ciscoNetwork.html
 # 2월 실습 2 : NAT 실습
 
 ## 실습 목표 : NAT 설정하기
-IPv4의 고갈문제 해결와 사설망 구축하기
+NAT 동작원리 이해 
 ## 네트워크 구성 : 
 - PC 2대
 - Switch 2960 한대
@@ -246,12 +246,34 @@ ip address 1.1.1.1 255.255.255.255
 exit 
 !기본 라우팅 (R1로 돌아가는 경로) 
 ip route 10.0.0.0 255.255.255.0 172.16.0.1
-PC1로 테스트 (대표로 하나) 
+PC1로 테스트 (결과확인) 
 PC1에서: ping 1.1.1.1 R1에서: show ip nat translations 
 예시: Inside local 10.0.0.10 → Inside global 172.16.0.1 
 PC2로 테스트 (PAT 증명용) PC2에서: ping 1.1.1.1
 ->R1 NAT 테이블에: 10.0.0.10 10.0.0.11
-
+테스트 결과
+내부 통신
+ping 10.0.0.1 → 성공
+ping 172.16.0.2 → 성공
+→ 내부 네트워크 및 게이트웨이 정상
+X 외부 IP(1.1.1.1) Ping
+Destination host unreachable
+이유:
+외부 네트워크에 1.1.1.1 장비가 존재하지 않음
+기본 라우팅(Default Route) 미설정
+NAT 변환 테이블 확인
+show ip nat translations
+결과:
+Inside Local	Inside Global
+10.0.0.9	172.16.0.9
+10.0.0.10	172.16.0.10
+10.0.0.11	172.16.0.11
+10.0.0.12	172.16.0.12
+실습 결과 분석
+NAT 변환 정상 동작 확인
+내부 → 외부 트래픽 변환 성공
+실제 외부 서버가 없기 때문에 Ping 실패 
+NAT 동작 자체는 문제 없음
 ## 개념설명하기 
 ### NAT이란 ? 
 - Network Address Translation, 네트워크 주소 변환
@@ -259,3 +281,5 @@ PC2로 테스트 (PAT 증명용) PC2에서: ping 1.1.1.1
 - 주된 목적: IPv4 주소 고갈 문제를 해결하기 위한 공인 IP 절약과, 내부 네트워크 구조를 숨겨 보안을 강화
 ## 실습자료 출처
 https://m.blog.naver.com/kimdj217/221267672672
+# 2월 실습 3 : Port Security (스위치 보안)
+## 실습 목표 : 
