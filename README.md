@@ -282,4 +282,54 @@ NAT 동작 자체는 문제 없음
 ## 실습자료 출처
 https://m.blog.naver.com/kimdj217/221267672672
 # 2월 실습 3 : Port Security (스위치 보안)
-## 실습 목표 : 
+## 실습 목표 : 보안 강화
+위치 포트에 연결된 장치의 MAC 주소를 기반으로 허가된 기기만 네트워크에 접속하도록 제한 
+허가되지 않은 장치 접속 및 MAC 주소 기반 공격(MAC Flooding 등)을 방지하고 보안을 강화
+## 네트워크 구성 : 
+	• PC1 
+	• PC2 
+	• Switch 2960
+	• Router 1대
+## 실습하기 :
+포트연결
+PC1 - Fa0/1
+SW1 ─ Fa0/24 ─ Router-Giga 0/0
+PC2 ── Fa0/2
+• Fa0/1 → Port Security 적용
+• Fa0/2 → 일반 포트
+• Fa0/24 → Router 연결 (trunk 또는 access)
+기본설정
+1VALN설정
+conf t
+vlan 10
+name USER_VLAN
+exit
+2 PC1 연결 포트 (보안 적용)
+interface fa0/1
+switchport mode access
+switchport access vlan 10
+switchport port-security
+switchport port-security maximum 1
+switchport port-security mac-address sticky
+switchport port-security violation shutdown
+exit
+3 PC2 포트 (일반 포트)
+interface fa0/2
+switchport mode access
+switchport access vlan 10
+IP 설정
+PC1
+	• IP: 192.168.10.10
+	• Mask: 255.255.255.0
+	• Gateway: 192.168.10.1
+PC2
+	• IP: 192.168.10.20
+정상 동작 확인PC1 ↔ PC2 ping 확인
+그리고:
+show port-security interface fa0/1
+sticky로 MAC 학습된 거 확인
+## 개념 설명 
+Port-Security 란?
+특정 포트에 Port-Security 기능을 사용하여 포트에 학습할 수 있는 MAC주소의 수를 제한하거나 포트에 MAC 주소를 설정하여 허가된 MAC 주소만 접속 가능하도록 설정하는 것
+
+
